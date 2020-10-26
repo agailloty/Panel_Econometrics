@@ -1,0 +1,99 @@
+---
+title: "Dossier Panel"
+author: "Axel-Cleris Gailloty"
+date: "26/10/2020"
+output: bookdown::gitbook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plm)
+library(readxl)
+library(recipes)
+library(tidyr)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+# ggplot2::theme_set(theme_gray)
+knitr::opts_chunk$set(dpi = 400)
+```
+
+# Lecture de la base de données
+
+```{r}
+data <- readxl::read_excel("Data_Extract_From_World_Development_Indicators.xlsx", na = "..")
+```
+
+# Vérification des données 
+
+```{r}
+kable(head(data[, 1:9]))
+```
+
+Il convient maintenant d'arranger les données dans un format exploitable. 
+
+```{r}
+df <- pivot_longer(data, cols = "2000 [YR2000]":"2019 [YR2019]")
+df$uniqueCol <- paste(df$`Country Code`, df$`Series Code`, df$name)
+df <- df[-(which(duplicated(df$uniqueCol))),]
+df <- select(df, -c("Country Code", "Series Code", "uniqueCol"))
+kable(head(df))
+```
+
+```{r}
+ok <- pivot_wider(df, id_cols = c("Country Name", "name"), names_from = "Series Name") %>%
+  filter( !is.na(`Country Name`))
+
+replacements <- list( 
+  pct = c("%", "pct"),
+  USD = c("\\$", "d"),
+  coma = c(",", "_"),
+  open_bracket = c("\\(", ""),
+  closed_bracket = c("\\)", ""),
+  white_space = c(" ", "_")
+  )
+
+clean_names <- function(x, patternReplacement = replacements) {
+  out <- tolower(x)
+  for (repl in patternReplacement) {
+    out <- gsub(pattern = repl[1], replacement = repl[2], x = out)
+  }
+  out
+}
+```
+
+
+```{r}
+colnames(ok) <- clean_names(colnames(ok))
+ok <- ok %>% select(-na) %>%
+  mutate(year = sapply(name, function(x) as.numeric(strsplit(x, " ")[[1]][1]))) %>%
+  select(-name)
+```
+
+
+# Affichage données manquantes 
+
+```{r}
+sapply(ok, function(x) sum(is.na(x))) %>%
+  stack() %>%
+  ggplot(aes(x = ind, y = values)) + geom_col() + 
+  coord_flip() + theme_gray()
+```
+
+
+```{r fig.height=400, fig.width=600}
+visdat::vis_miss(ok, cluster = TRUE, sort_miss = TRUE)
+```
+
+
+
+# Imputations des données par des techniques de Machine learning 
+
+```{r}
+library(recipes)
+cleaned_ok <- recipe(year~., data = ok) %>%
+  step_knnimpute(all_predictors()) %>%
+  prep() %>%
+  juice()
+```
+
