@@ -15,7 +15,6 @@ library(knitr)
 library(dplyr)
 library(ggplot2)
 # ggplot2::theme_set(theme_gray)
-knitr::opts_chunk$set(dpi = 400)
 ```
 
 # Lecture de la base de données
@@ -81,7 +80,7 @@ sapply(ok, function(x) sum(is.na(x))) %>%
 ```
 
 
-```{r fig.height=400, fig.width=600}
+```{r}
 visdat::vis_miss(ok, cluster = TRUE, sort_miss = TRUE)
 ```
 
