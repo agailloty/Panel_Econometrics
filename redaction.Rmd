@@ -1,0 +1,30 @@
+---
+title: "Une revisite de la courbe de Phillips sur des données de panel"
+author: "Axel-Cleris Gailloty"
+date: "04/11/2020"
+output: 
+  word_document:
+    reference_docx: "template.docx"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = FALSE, dpi = 300)
+# Load package & data
+library(ggplot2)
+theme_set(ggthemes::theme_economist())
+library(readr)
+library(dplyr)
+phillips <- read_csv("final_data/final.csv")
+```
+
+# Introduction 
+
+En 1958, dans son article *The Relation between Unemployment and the Rate of Change of Money Wage Rates in the United Kingdom*, l'économiste néo-zélandas William Phillips fait une observation de la relation négative entre le taux de chômage et l'inflation. Il explique cette relation par le fait qu'au-delà d'un certain niveau de chômage, les salariés ne sont plus en position de force pour exiger une hausse de salaire ; le partage des gains de productivité s'effectue alors en faveur de l'entreprise. Donc, les salariés ont plus de pouvoir quand il y a un faible taux de chômage.  
+La relation que Phillips décrit nourrit ainsi la pensée des économistes de l'époque et des travaux similaires ont été menés dans d'autres pays pour vérifier la fiabilité de sa prédiction.  
+La relation décrite par Phillips est ensuite théorisée par la courbe de Phillips qui représente sur un graphique le lien entre le taux de chômage et l'inflation. 
+
+La courbe de Phillips va donner une grande impulsion au modèle keynésien qui peinait à établir une relation entre les variables réelles et les variables nominales. Incluant donc dans son modèle la courbe de Phillips et la loi d'Okun, le modèle keynésien a grandi en influence et imposait un consensus dans les années 1950.   
+
+La relation décrite par la courbe de Phillips a notamment été contestée par des économistes comme Milton Friedman et Robert Lucas.  Pour Friedman, la courbe de Phillips est valable à court terme car à court terme les anticipations des agents sont fausses du fait qu'ils sont victimes d'illusions. Ainsi pour Friedman, en réalité la courbe de Phillips est verticale car il existe un chômage naturel sur le long terme et le taux de chômage est égal à ce taux naturel.  
+
+Etant donnée
