@@ -1,0 +1,5 @@
+modèle within
+
+Il faut que ce soit within. 
+
+Utiliser à la fois TSP, STATA et SAS et R si besoin.

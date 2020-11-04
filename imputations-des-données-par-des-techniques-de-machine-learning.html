@@ -151,11 +151,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="imputations-des-données-par-des-techniques-de-machine-learning" class="section level1">
 <h1><span class="header-section-number">4</span> Imputations des données par des techniques de Machine learning</h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">library</span>(recipes)</a>
-<a class="sourceLine" id="cb8-2" title="2">cleaned_ok &lt;-<span class="st"> </span><span class="kw">recipe</span>(year<span class="op">~</span>., <span class="dt">data =</span> ok) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="st">  </span><span class="kw">step_knnimpute</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="st">  </span><span class="kw">prep</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="st">  </span><span class="kw">juice</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># Sélectionner les pays</span></a>
+<a class="sourceLine" id="cb7-2" title="2">selected_countries &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;France&quot;</span>, <span class="st">&quot;Angola&quot;</span>, <span class="st">&quot;Australia&quot;</span>, <span class="st">&quot;Austria&quot;</span>, <span class="st">&quot;Bolivia&quot;</span>, <span class="st">&quot;Brazil&quot;</span>, </a>
+<a class="sourceLine" id="cb7-3" title="3">  <span class="st">&quot;Burkina Faso&quot;</span>, <span class="st">&quot;Burundi&quot;</span>, <span class="st">&quot;Cabo Verde&quot;</span>, <span class="st">&quot;Cambodia&quot;</span>, <span class="st">&quot;Cameroon&quot;</span>, </a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="st">&quot;Canada&quot;</span>,<span class="st">&quot;Chile&quot;</span>, <span class="st">&quot;China&quot;</span>, <span class="st">&quot;Colombia&quot;</span>, <span class="st">&quot;Poland&quot;</span>, <span class="st">&quot;Portugal&quot;</span>, <span class="st">&quot;Puerto Rico&quot;</span>, <span class="st">&quot;Qatar&quot;</span>, <span class="st">&quot;Romania&quot;</span>, <span class="st">&quot;Russian Federation&quot;</span>, <span class="st">&quot;Uganda&quot;</span>, <span class="st">&quot;Ukraine&quot;</span>, <span class="st">&quot;United Arab Emirates&quot;</span>, <span class="st">&quot;United Kingdom&quot;</span>, </a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="st">&quot;United States&quot;</span>, <span class="st">&quot;Uruguay&quot;</span>, <span class="st">&quot;Uzbekistan&quot;</span>, <span class="st">&quot;Vanuatu&quot;</span>, <span class="st">&quot;Venezuela, RB&quot;</span>, </a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="st">&quot;Vietnam&quot;</span>)</a>
+<a class="sourceLine" id="cb7-7" title="7">countries_data &lt;-<span class="st"> </span>ok <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="st">  </span><span class="kw">filter</span> (country_name <span class="op">%in%</span><span class="st"> </span>selected_countries)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">sapply</span>(countries_data, <span class="cf">function</span>(x) <span class="kw">sum</span>(<span class="kw">is.na</span>(x))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="st">  </span><span class="kw">stack</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ind, <span class="dt">y =</span> values)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_gray</span>()</a></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">countries_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(country_name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="st">  </span><span class="kw">count</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 31 x 2
+## # Groups:   country_name [31]
+##    country_name     n
+##    &lt;chr&gt;        &lt;int&gt;
+##  1 Angola          20
+##  2 Australia       20
+##  3 Austria         20
+##  4 Bolivia         20
+##  5 Brazil          20
+##  6 Burkina Faso    20
+##  7 Burundi         20
+##  8 Cabo Verde      20
+##  9 Cambodia        20
+## 10 Cameroon        20
+## # ... with 21 more rows</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">library</span>(recipes)</a>
+<a class="sourceLine" id="cb11-2" title="2">countries_data_imputed &lt;-<span class="st"> </span><span class="kw">recipe</span>(year<span class="op">~</span>., <span class="dt">data =</span> countries_data) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span><span class="kw">step_bagimpute</span>(<span class="kw">all_predictors</span>(), <span class="dt">trees =</span> <span class="dv">20</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="st">  </span><span class="kw">prep</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="st">  </span><span class="kw">juice</span>()</a></code></pre></div>
 </div>
             </section>
 

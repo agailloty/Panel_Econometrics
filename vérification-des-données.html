@@ -151,85 +151,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="vérification-des-données" class="section level1">
 <h1><span class="header-section-number">2</span> Vérification des données</h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">kable</span>(<span class="kw">head</span>(data[, <span class="dv">1</span><span class="op">:</span><span class="dv">9</span>]))</a></code></pre></div>
-<table style="width:100%;">
-<colgroup>
-<col width="7%" />
-<col width="7%" />
-<col width="35%" />
-<col width="10%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Country Name</th>
-<th align="left">Country Code</th>
-<th align="left">Series Name</th>
-<th align="left">Series Code</th>
-<th align="right">2000 [YR2000]</th>
-<th align="right">2001 [YR2001]</th>
-<th align="right">2002 [YR2002]</th>
-<th align="right">2003 [YR2003]</th>
-<th align="right">2004 [YR2004]</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Afghanistan</td>
-<td align="left">AFG</td>
-<td align="left">GDP (constant 2010 US<span class="math inline">\() |NY.GDP.MKTP.KD | NA| NA| 7.465115e+09| 8.124454e+09| 8.239344e+09| |Afghanistan |AFG |GDP growth (annual %) |NY.GDP.MKTP.KD.ZG | NA| NA| NA| 8.832278e+00| 1.414118e+00| |Afghanistan |AFG |GDP per capita (constant 2010 US\)</span>)</td>
-<td align="left">NY.GDP.PCAP.KD</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">3.303036e+02</td>
-<td align="right">3.430809e+02</td>
-<td align="right">3.332167e+02</td>
-</tr>
-<tr class="even">
-<td align="left">Afghanistan</td>
-<td align="left">AFG</td>
-<td align="left">General government final consumption expenditure (current US$)</td>
-<td align="left">NE.CON.GOVT.CD</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">3.453619e+08</td>
-<td align="right">4.482133e+08</td>
-<td align="right">5.587059e+08</td>
-</tr>
-<tr class="odd">
-<td align="left">Afghanistan</td>
-<td align="left">AFG</td>
-<td align="left">Inflation, consumer prices (annual %)</td>
-<td align="left">FP.CPI.TOTL.ZG</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">Afghanistan</td>
-<td align="left">AFG</td>
-<td align="left">International migrant stock (% of population)</td>
-<td align="left">SM.POP.TOTL.ZS</td>
-<td align="right">0.3853275</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-</tbody>
-</table>
 <p>Il convient maintenant d’arranger les données dans un format exploitable.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(data, <span class="dt">cols =</span> <span class="st">&quot;2000 [YR2000]&quot;</span><span class="op">:</span><span class="st">&quot;2019 [YR2019]&quot;</span>)</a>
-<a class="sourceLine" id="cb3-2" title="2">df<span class="op">$</span>uniqueCol &lt;-<span class="st"> </span><span class="kw">paste</span>(df<span class="op">$</span><span class="st">`</span><span class="dt">Country Code</span><span class="st">`</span>, df<span class="op">$</span><span class="st">`</span><span class="dt">Series Code</span><span class="st">`</span>, df<span class="op">$</span>name)</a>
-<a class="sourceLine" id="cb3-3" title="3">df &lt;-<span class="st"> </span>df[<span class="op">-</span>(<span class="kw">which</span>(<span class="kw">duplicated</span>(df<span class="op">$</span>uniqueCol))),]</a>
-<a class="sourceLine" id="cb3-4" title="4">df &lt;-<span class="st"> </span><span class="kw">select</span>(df, <span class="op">-</span><span class="kw">c</span>(<span class="st">&quot;Country Code&quot;</span>, <span class="st">&quot;Series Code&quot;</span>, <span class="st">&quot;uniqueCol&quot;</span>))</a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="kw">kable</span>(<span class="kw">head</span>(df))</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(data, <span class="dt">cols =</span> <span class="st">&quot;2000 [YR2000]&quot;</span><span class="op">:</span><span class="st">&quot;2019 [YR2019]&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">df<span class="op">$</span>uniqueCol &lt;-<span class="st"> </span><span class="kw">paste</span>(df<span class="op">$</span><span class="st">`</span><span class="dt">Country Code</span><span class="st">`</span>, df<span class="op">$</span><span class="st">`</span><span class="dt">Series Code</span><span class="st">`</span>, df<span class="op">$</span>name)</a>
+<a class="sourceLine" id="cb2-3" title="3">df &lt;-<span class="st"> </span>df[<span class="op">-</span>(<span class="kw">which</span>(<span class="kw">duplicated</span>(df<span class="op">$</span>uniqueCol))),]</a>
+<a class="sourceLine" id="cb2-4" title="4">df &lt;-<span class="st"> </span><span class="kw">select</span>(df, <span class="op">-</span><span class="kw">c</span>(<span class="st">&quot;Country Code&quot;</span>, <span class="st">&quot;Series Code&quot;</span>, <span class="st">&quot;uniqueCol&quot;</span>))</a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">kable</span>(<span class="kw">head</span>(df))</a></code></pre></div>
 <table>
 <colgroup>
 <col width="20%" />
@@ -266,29 +193,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ok &lt;-<span class="st"> </span><span class="kw">pivot_wider</span>(df, <span class="dt">id_cols =</span> <span class="kw">c</span>(<span class="st">&quot;Country Name&quot;</span>, <span class="st">&quot;name&quot;</span>), <span class="dt">names_from =</span> <span class="st">&quot;Series Name&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="kw">is.na</span>(<span class="st">`</span><span class="dt">Country Name</span><span class="st">`</span>))</a>
-<a class="sourceLine" id="cb4-3" title="3"></a>
-<a class="sourceLine" id="cb4-4" title="4">replacements &lt;-<span class="st"> </span><span class="kw">list</span>( </a>
-<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">pct =</span> <span class="kw">c</span>(<span class="st">&quot;%&quot;</span>, <span class="st">&quot;pct&quot;</span>),</a>
-<a class="sourceLine" id="cb4-6" title="6">  <span class="dt">USD =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">$&quot;</span>, <span class="st">&quot;d&quot;</span>),</a>
-<a class="sourceLine" id="cb4-7" title="7">  <span class="dt">coma =</span> <span class="kw">c</span>(<span class="st">&quot;,&quot;</span>, <span class="st">&quot;_&quot;</span>),</a>
-<a class="sourceLine" id="cb4-8" title="8">  <span class="dt">open_bracket =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(&quot;</span>, <span class="st">&quot;&quot;</span>),</a>
-<a class="sourceLine" id="cb4-9" title="9">  <span class="dt">closed_bracket =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;&quot;</span>),</a>
-<a class="sourceLine" id="cb4-10" title="10">  <span class="dt">white_space =</span> <span class="kw">c</span>(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>)</a>
-<a class="sourceLine" id="cb4-11" title="11">  )</a>
-<a class="sourceLine" id="cb4-12" title="12"></a>
-<a class="sourceLine" id="cb4-13" title="13">clean_names &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">patternReplacement =</span> replacements) {</a>
-<a class="sourceLine" id="cb4-14" title="14">  out &lt;-<span class="st"> </span><span class="kw">tolower</span>(x)</a>
-<a class="sourceLine" id="cb4-15" title="15">  <span class="cf">for</span> (repl <span class="cf">in</span> patternReplacement) {</a>
-<a class="sourceLine" id="cb4-16" title="16">    out &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="dt">pattern =</span> repl[<span class="dv">1</span>], <span class="dt">replacement =</span> repl[<span class="dv">2</span>], <span class="dt">x =</span> out)</a>
-<a class="sourceLine" id="cb4-17" title="17">  }</a>
-<a class="sourceLine" id="cb4-18" title="18">  out</a>
-<a class="sourceLine" id="cb4-19" title="19">}</a></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">colnames</span>(ok) &lt;-<span class="st"> </span><span class="kw">clean_names</span>(<span class="kw">colnames</span>(ok))</a>
-<a class="sourceLine" id="cb5-2" title="2">ok &lt;-<span class="st"> </span>ok <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>na) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">sapply</span>(name, <span class="cf">function</span>(x) <span class="kw">as.numeric</span>(<span class="kw">strsplit</span>(x, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>]))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>name)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">ok &lt;-<span class="st"> </span><span class="kw">pivot_wider</span>(df, <span class="dt">id_cols =</span> <span class="kw">c</span>(<span class="st">&quot;Country Name&quot;</span>, <span class="st">&quot;name&quot;</span>), <span class="dt">names_from =</span> <span class="st">&quot;Series Name&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="kw">is.na</span>(<span class="st">`</span><span class="dt">Country Name</span><span class="st">`</span>))</a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4">replacements &lt;-<span class="st"> </span><span class="kw">list</span>( </a>
+<a class="sourceLine" id="cb3-5" title="5">  <span class="dt">pct =</span> <span class="kw">c</span>(<span class="st">&quot;%&quot;</span>, <span class="st">&quot;pct&quot;</span>),</a>
+<a class="sourceLine" id="cb3-6" title="6">  <span class="dt">USD =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">$&quot;</span>, <span class="st">&quot;d&quot;</span>),</a>
+<a class="sourceLine" id="cb3-7" title="7">  <span class="dt">coma =</span> <span class="kw">c</span>(<span class="st">&quot;,&quot;</span>, <span class="st">&quot;_&quot;</span>),</a>
+<a class="sourceLine" id="cb3-8" title="8">  <span class="dt">open_bracket =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(&quot;</span>, <span class="st">&quot;&quot;</span>),</a>
+<a class="sourceLine" id="cb3-9" title="9">  <span class="dt">closed_bracket =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;&quot;</span>),</a>
+<a class="sourceLine" id="cb3-10" title="10">  <span class="dt">white_space =</span> <span class="kw">c</span>(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>)</a>
+<a class="sourceLine" id="cb3-11" title="11">  )</a>
+<a class="sourceLine" id="cb3-12" title="12"></a>
+<a class="sourceLine" id="cb3-13" title="13">clean_names &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">patternReplacement =</span> replacements) {</a>
+<a class="sourceLine" id="cb3-14" title="14">  out &lt;-<span class="st"> </span><span class="kw">tolower</span>(x)</a>
+<a class="sourceLine" id="cb3-15" title="15">  <span class="cf">for</span> (repl <span class="cf">in</span> patternReplacement) {</a>
+<a class="sourceLine" id="cb3-16" title="16">    out &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="dt">pattern =</span> repl[<span class="dv">1</span>], <span class="dt">replacement =</span> repl[<span class="dv">2</span>], <span class="dt">x =</span> out)</a>
+<a class="sourceLine" id="cb3-17" title="17">  }</a>
+<a class="sourceLine" id="cb3-18" title="18">  out</a>
+<a class="sourceLine" id="cb3-19" title="19">}</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">colnames</span>(ok) &lt;-<span class="st"> </span><span class="kw">clean_names</span>(<span class="kw">colnames</span>(ok))</a>
+<a class="sourceLine" id="cb4-2" title="2">ok &lt;-<span class="st"> </span>ok <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>na) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">sapply</span>(name, <span class="cf">function</span>(x) <span class="kw">as.numeric</span>(<span class="kw">strsplit</span>(x, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>]))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>name)</a></code></pre></div>
 </div>
             </section>
 

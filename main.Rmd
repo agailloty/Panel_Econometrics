@@ -25,9 +25,7 @@ data <- readxl::read_excel("Data_Extract_From_World_Development_Indicators.xlsx"
 
 # Vérification des données 
 
-```{r}
-kable(head(data[, 1:9]))
-```
+
 
 Il convient maintenant d'arranger les données dans un format exploitable. 
 
@@ -40,8 +38,22 @@ kable(head(df))
 ```
 
 ```{r}
+smallIslands <- c("American Samoa", 
+"Andorra", "Antigua and Barbuda", "Aruba", "Bermuda", "British Virgin Islands", 
+"Cayman Islands", "Curacao", "Dominica", "Faroe Islands", "Gibraltar", 
+"Greenland", "Grenada", "Isle of Man", "Kiribati", "Kosovo", 
+"Liechtenstein", "Marshall Islands", "Micronesia, Fed. Sts.", 
+"Monaco", "Nauru", "Northern Mariana Islands", "Palau", "San Marino", 
+"Seychelles", "Sint Maarten (Dutch part)", "St. Kitts and Nevis", 
+"St. Martin (French part)", "Turks and Caicos Islands", "Tuvalu"
+)
+
 ok <- pivot_wider(df, id_cols = c("Country Name", "name"), names_from = "Series Name") %>%
-  filter( !is.na(`Country Name`))
+  filter( !is.na(`Country Name`)) %>%
+  # Take only from row 1 to 4240 (excluding regional statistics)
+  slice(1:4240) %>%
+  # Remove small islands 
+  filter(!`Country Name` %in% smallIslands)
 
 replacements <- list( 
   pct = c("%", "pct"),
@@ -73,10 +85,74 @@ ok <- ok %>% select(-na) %>%
 # Affichage données manquantes 
 
 ```{r}
+NEW_COLNAMES <- c("COUNTRY", "GDPUSD", "GDPGROWTH", "GDPCAPITA", "SPENDING", 
+                  "INFLATION", "MIGRATION", "POPGROWTH", "UNEMPLOYMENT", "UNEMPNAT", "URBANPOP", "ELECTRICITY", "YEAR")
+colnames(ok) <- NEW_COLNAMES
+
+# Remove UNEMPNAT
+ok <- select(ok, -UNEMPNAT)
+
+head(ok)
+```
+
+```{r}
+data_years <- split(ok, ok$YEAR)
+missing_by_years <- list()
+
+for (dataset in data_years) {
+  missing_by_years[[names(dataset$YEAR[1])]] <- sapply(dataset, function(x) sum(is.na(x))) %>%
+    stack() %>%
+    mutate(year = names(dataset$YEAR[1]))
+}
+
+bound_df <- bind_rows(missing_by_years)
+bound_df %>%
+  ggplot(aes(y = ind, x = values)) + geom_col() +
+  facet_wrap(~year)
+
+```
+
+
+```{r fig.height=10, fig.width=10}
+bound_df %>%
+  ggplot(aes(y = ind, x = values)) + geom_col() +
+  facet_wrap(~year)
+```
+
+
+
+```{r fig.height=10, fig.width=12}
+bound_df %>%
+  ggplot(aes(y = year, x = values)) + geom_col() +
+  facet_wrap(~ind, ncol = 5)
+```
+
+Quels sont les pays manquants à chaque fois pour le taux de chômage? 
+
+```{r}
+ok %>%
+  select(YEAR, UNEMPLOYMENT, COUNTRY) %>%
+  sapply(function(x) unique(.$COUNTRY[which(is.na(x))])) %>%
+  dput()
+```
+
+
+
+
+
+```{r}
 sapply(ok, function(x) sum(is.na(x))) %>%
   stack() %>%
   ggplot(aes(x = ind, y = values)) + geom_col() + 
+  # facet_wrap(~YEAR) + 
   coord_flip() + theme_gray()
+```
+
+# By year 
+
+```{r}
+sapply(ok, function(x) sum(is.na(x))) %>%
+  stack()
 ```
 
 
@@ -88,11 +164,44 @@ visdat::vis_miss(ok, cluster = TRUE, sort_miss = TRUE)
 
 # Imputations des données par des techniques de Machine learning 
 
+
+
 ```{r}
 library(recipes)
-cleaned_ok <- recipe(year~., data = ok) %>%
-  step_knnimpute(all_predictors()) %>%
+countries_data_imputed <- recipe(UNEMPLOYMENT~., data = ok) %>%
+  step_knnimpute(all_predictors(), neighbors = 5) %>%
   prep() %>%
   juice()
+```
+
+```{r}
+# Write data to disk 
+# Give to each country an ID number 
+countryList <- unique(countries_data_imputed$COUNTRY)
+countries_data_imputed$ID <- as.numeric(as.factor(countries_data_imputed$COUNTRY))
+write.csv(countries_data_imputed, "final_data/final.csv", row.names = FALSE)
+openxlsx::write.xlsx(countries_data_imputed, "final_data/final.xls")
+```
+
+
+# Graphiques 
+
+# Evolutions des variables d'intérêts 
+
+
+
+## Données pour RO
+
+```{r}
+states <- unique(ok$country_name)[1:217]
+data_to_write <- filter(ok, country_name %in% states)
+data_to_write <- recipe(year~., data = data_to_write) %>%
+  step_bagimpute(all_predictors(), trees = 20) %>%
+  prep() %>%
+  juice()
+```
+
+```{r}
+write.csv(data_to_write, "data2.csv", row.names = FALSE, fileEncoding = "utf-8")
 ```
 
