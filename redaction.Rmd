@@ -27,4 +27,22 @@ La courbe de Phillips va donner une grande impulsion au modèle keynésien qui p
 
 La relation décrite par la courbe de Phillips a notamment été contestée par des économistes comme Milton Friedman et Robert Lucas.  Pour Friedman, la courbe de Phillips est valable à court terme car à court terme les anticipations des agents sont fausses du fait qu'ils sont victimes d'illusions. Ainsi pour Friedman, en réalité la courbe de Phillips est verticale car il existe un chômage naturel sur le long terme et le taux de chômage est égal à ce taux naturel.  
 
-Etant donnée
+# Présentation de la base de données et exploration des variables d'intérêt.  
+
+Pour répondre aux questions que nous nous sommes posées dans la problématique, nous avons pensé à collecter des données sur les grandeurs macroéconomiques évoqués dans la théorie économique. Nous avons donc choisi les variables suivantes :   
+
+- Le taux de chômage (UNEMPLOYMENT)
+- Croissance du PIB (GDPGROWTH)
+- Les dépenses publiques (SPENDING) 
+- Le taux d'inflation (INFLATION) 
+- Le stock des migrants (MIGRATION)
+- La croissance de la population (POPGROWTH)
+- Pourcentage de la population urbaine (URBANPOP)
+- Le pourcentage de la population ayant accès à l'électricité (ELECTRICITY)  
+
+Lors du pré-traitement des données, nous avons remarqué qu'il existait beaucoup de données manquantes pour la variable *stock de migrants (MIGRATION)*, il nous a donc semblé pertinent de retirer cette variable du modèle car les techniques d'imputation multiple que nous avons utilisées pour imputer les données manquantes remplaceraient les données par des données biaisées qui réduisent la variance que nous cherchons à expliquer.  
+Les détails sur le pré-traitement des données ainsi que les scripts R se trouvent dans les annexes de ce document.  
+
+
+
+
