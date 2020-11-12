@@ -1,0 +1,124 @@
+---
+title: "Applications de l’optimisation dans l'apprentissage automatique (machine learning) en économie cas des moindres carrés ordinaires (MCO) et des K-Means."
+author: "Axel-Cleris Gailloty"
+date: "10/11/2020"
+output: 
+  word_document:
+    reference_docx: "../template.docx"
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = FALSE)
+library(dplyr)
+data <- read.csv("data/Salary_Data.csv")
+colnames(data) <- c("annees", "salaire")
+```
+
+
+Applications de l’optimisation dans le champ de l’économie : cas des moindres carrés ordinaires et des K-Moyennes. 
+
+# Introduction 
+
+L’économie est souvent définie comme la science de la rareté et des choix efficaces. Cette définition part du fait que les besoins des agents économiques sont illimités tandis que les ressources, elles sont limitées et rares. Il revient donc à ce que chaque agent économique définisse sa fonction objectif (fonction d’utilité pour les individus, fonction de production pour les entreprises) à optimiser afin de maximiser son gain compte tenu des moyens qu’il possède.   
+Deux branches de la science économique emploient intensivement à l’optimisation : ce sont la microéconomie et l’économétrie.  
+
+La microéconomie emploie l’optimisation en vue de construire des théories qui expliquent le comportement humain en face de la rareté, de l’incertitude et dans le cadre des contrats. 
+L’optimisation en microéconomie permet par exemple de trouver le panier optimal de biens à acheter compte tenu du revenu du consommateur. Cette approche permet par exemple de prédire le comportement du consommateur face aux variations de prix.  Elle peut aussi aider à déterminer la combinaison optimale des facteurs de production (typiquement le capital et le travail) afin de maximiser le profit ou de réduire les coûts de production. 
+
+L’économétrie de son côté utilise tout un ensemble de techniques mathématiques, statistiques et informatiques en vue de tester les théories économiques à travers la modélisation mathématique, l’estimation des paramètres et la prévision.  
+
+L’économétrie en tant que branche des sciences économiques a importé dans la science économique un très grand nombre d'outils empruntés à d'autres disciplines comme la biométrie, les statistiques. La méthode des moindres carrés ordinaires qui est aujourd'hui largement utilisé avec des variations mineures dans plusieurs modèles économétriques illustre bien le recours de l'économétrie à d'autres disciplines.   
+
+Dans ce travail nous aimerions aborder l'aspect optimisation dans deux algorithmes souvent employés dans des problèmes économiques. Ce sont les moindres carrés ordinaires et les K-Moyennes.  
+Nous commencerons par présente chaque algorithme puis nous cherchons deux applications pour chacun.  
+
+
+
+# Les moindres carrés ordinaires  
+
+## Historique de la méthode 
+La première publication de la méthode des moindres carrés (destinée à déterminer des quantités dans un système d'équations surdéterminé) est due à Legendre qui l'a donnée en annexe d'un ouvrage intitulé *Nouvelles méthodes pour la détermination des orbites des comètes (1805)*  
+
+## Formalisation  
+
+La méthode des moindres carrés utilise de l'optimisation mathématique. Il s'agit en effet de trouver un vecteur de paramètres qui minimise la **fonction objective** qui est la somme des carrés des résidus.  
+Certaines formalisations utilisent une autre fonction objective mais dans la plupart des cas nous cherchons à réduire la somme des carrés des résidus (SCR). L'intérêt de minimiser la SCR est qu'il s'agit d'une fonction convexe qui admet donc un minimum global.  
+L'optimisation se fait en utilisant la méthode de Lagrange.  
+
+Dans les lignes suivantes nous exposons les étapes utilisées pour arriver au résultat optimal.  
+
+
+
+$min_{\hat{a}, \hat{b}} \sum_{u_i=1}^{N} \hat{U}_{i}^2$  
+ $\hat{U_i} = y_i-\hat{y_i}$  
+$min_{\hat{a}, \hat{b}} \sum_{u_i=1}^{N} (y_i - \hat{y_i})^2$   
+ 
+ Nous savons que la forme finale de l'équation que nous voulons estimer est la suivante : 
+ $\hat{y_i} = \hat{a} + \hat{b}x_i$  
+ 
+ Ainsi en réécrivant l'équation initiale notre programme d'optimisation est la suivante : 
+ 
+ $min_{\hat{a}, \hat{b}} \sum_{u_i=1}^{N} (y_i - \hat{a} - \hat{b}x_i)^2$  
+ 
+ 
+ Nous posons les conditions de premier ordre (CPO) du Lagrangien.  
+ 
+
+$\frac{\partial L}{\partial \hat{a}}= 0$    
+$-2 \sum_{u_i=1}^{N} (y_i - \hat{a} - \hat{b}x_i) = 0$   
+$\sum_{u_i=1}^{N} (y_i - \hat{a} - \hat{b}x_i) = 0$   
+$\sum_{u_i=1}^{N} y - \sum_{u_i=1}^{N} \hat{a} - \sum_{ui_=1}^{N} \hat{b}x_i = 0$  
+
+Etant donné que $\hat{a}$  est une constante, la somme allant de 1 à N est égale à $N\hat{a}$  
+
+$\sum_{u_i=1}^{N} y_i - N\hat{a} - \hat{b} \sum_{u_i=1}^{N} x_i = 0$   
+$N\bar{y} - N\hat{a} - \hat{b}N\bar{X} = 0$    
+$\text{Nous pouvons diviser par N}$   
+$\bar{y} - \hat{a} - \hat{b}\bar{X} = 0$    
+$\bar{y} = \hat{a} + \hat{b}\bar{X}$    
+
+Nous pouvons extraire $\hat{a}$     
+$$\hat{a} = \bar{y} - \hat{b}\bar{x}$$    
+
+Maintenant nous cherchons à exprimer $\hat{b}$  
+
+$\frac{\partial L}{\partial \hat{b}}= 0$    
+$-2 \sum_{u_i=1}^{N} (x_i - \hat{a} - \hat{b}x_i) = 0$   
+$\sum_{u_i=1}^{N} x_i(y_i - \hat{a} - \hat{b}x_i) = 0$  
+$\sum_{u_i=1}^{N} x_i(y_i - (y-\hat{b}x_i) - \hat{b}x_i) = 0$   
+$\sum_{u_i=1}^{N} x_i(y_i - \bar{y})  - \hat{b}x_i (x_i - \bar{x}) = 0$   
+$\sum_{u_i=1}^{N} x_i(y_i - \bar{y})  = \sum_{u_i=1}^N\hat{b_i} (x_i - \bar{x})$   
+$\sum_{u_i=1}^{N} x_i(y_i - \bar{y})  = \hat{b}\sum_{u_i=1}^N x_i(x_i-\bar{x})$     
+$\sum_{i=1}^N(y_i -\hat{y}) = \hat{b} \sum_{i=1}^Nx_i(x_i-\bar{x})$   
+
+Nous pouvous dès lors exprimer $\hat{b}$ 
+
+$$\hat{b} = \frac{\sum_{i=1}^N x_i (y_i-\bar{y})}{\sum_{i=1}^Nx_i (x_i-\bar{x})}$$
+
+
+
+
+ 
+
+
+## Applications  
+
+### La relation entre le salaire et l'expérience professionnelle  
+
+Ayons un aperçu des 10 premières lignes des données sur lesquelles nous allons démontrer une application de la méthode d'estimation par les OLS. 
+
+```{r echo=FALSE}
+knitr::kable(head(data, 8))
+```
+
+Le jeu de données contient 30 observations. 
+Les années sont continues, il s'agit en fait du nombre total de jours qui est divisé par 365 pour exprimer les expériences en années.  
+
+## La consommation de cigarette et l'âge  
+
+
+
+• Chaque dossier devra présenter (au moins) un exemple de résolution de problème traité avec des méthode de recherche opérationnelle • Les dossiers (Powerpoint, Word, pdf, …) sont de 10 à 20 pages. Ils doivent impérativement être remis avant le 30/11/19
+
+
+
