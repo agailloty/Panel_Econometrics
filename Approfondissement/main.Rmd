@@ -1,0 +1,16 @@
+---
+title: 'PROBIT : implémentations et applications avec R et Python'
+author: 
+- "Axel-Cleris Gailloty"
+- "Sandra Garbocz"
+- "Omar Loukili"
+date: "13/11/2020"
+output: 
+  word_document: "../template"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = FALSE)
+```
+
+# Introduction 
