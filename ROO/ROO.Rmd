@@ -10,6 +10,7 @@ output:
 ```{r include=FALSE}
 knitr::opts_chunk$set(comment = FALSE)
 library(dplyr)
+#library(kableExtra)
 data <- read.csv("data/Salary_Data.csv")
 colnames(data) <- c("annees", "salaire")
 ```
@@ -82,6 +83,23 @@ $$\hat{a} = \bar{y} - \hat{b}\bar{x}$$
 
 Maintenant nous cherchons à exprimer $\hat{b}$  
 
+$\sum_{i=1}^N (y_i -\hat{a}*x_i) = 0$  
+$\sum_{i=1}^N y_ix_i - \hat{a}x_i - \hat{b}x_i^2 = 0$  
+
+Nous remplaçons $\hat{a}$ par son expression trouvée plus haut.   
+
+$\sum_{i=1}^N y_ix_i - (\bar{y} - \hat{b}x_i) - \hat{b}x_i^2 = 0$   
+$\sum_{i=1}^N y_ix_i - \bar{y}x_i + \hat{b}\bar{x}x_i - \hat{b}x_i^2 = 0$  
+$\sum_{i=1}^N (y_i - \bar{y} + \hat{b}\bar{x} - \hat{b}x_i) x_i = 0$   
+$\sum_{i=1}^N yi - \bar{y} + \hat{b}(\bar{x} - x_i) = 0$  
+$\sum_{i=1}^N (y_i - \bar{y}) = -\hat{b}\sum_{i=1}^N (\bar{x} - x_i)$   
+$\hat{b} = \frac{\sum_{i=1}^N(y_i - \bar{y})}{\sum_{i=1}^N (x_i - \bar{x})}$    
+Or empiriquement nous savons que $\sum_{i=1}^N(y_i - \bar{y})$ et $\sum_{i=1}^N (x_i - \bar{x})$ sont égales à $0$, nous allons donc multiplier le numérateur et le dénominateur par $(x_i - \bar{x})$   
+$\hat{b} = \frac{\sum_{i=1}^N(y_i - \bar{y})(x_i - \bar{x})}{\sum_{i=1}^N (x_i - \bar{x})^2}$   
+
+
+
+
 $\frac{\partial L}{\partial \hat{b}}= 0$    
 $-2 \sum_{u_i=1}^{N} (x_i - \hat{a} - \hat{b}x_i) = 0$   
 $\sum_{u_i=1}^{N} x_i(y_i - \hat{a} - \hat{b}x_i) = 0$  
@@ -105,11 +123,55 @@ $$\hat{b} = \frac{\sum_{i=1}^N x_i (y_i-\bar{y})}{\sum_{i=1}^Nx_i (x_i-\bar{x})}
 
 ### La relation entre le salaire et l'expérience professionnelle  
 
-Ayons un aperçu des 10 premières lignes des données sur lesquelles nous allons démontrer une application de la méthode d'estimation par les OLS. 
+Ayons un aperçu des 10 premières lignes des données sur lesquelles nous allons démontrer une application de la méthode d'estimation par les OLS simples. 
 
 ```{r echo=FALSE}
 knitr::kable(head(data, 8))
+``` 
+
+Nous pouvons faire des graphiques pour afficher la distribution des colonnes (par des histogrammes) et la tendance avec un graphique 
+
+```{r echo=FALSE, fig.height=8, fig.width=8}
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
+plot(data$annees, data$salary, xlab = "Années expériences", ylab = "Salaires", main = "Nuage des points années expériences - salaires")
+hist(data$annees, main = "Années d'expérience", breaks = 20, xlab = "Années")
+hist(data$salaire, main = "Salaires", breaks = 20, xlab = "Salaires")
 ```
+ 
+Notre but est donc d'exprimer le salaire comme une fonction des années d'expérience. Nous cherchons une relation de la forme $salaire_i = \hat{a} + \hat{b} * experiences_i + u_i$ telle que les coefficients estimés $\hat{a}$ et $\hat{b}$ minimisent la somme du carrées des erreurs.  
+ 
+ Nous appliquons les relations que nous avons trouvées dans lorsque nous avons résolu le programme d'optimisation du Lagrangien.  
+ 
+ Ainsi nous calculons d'abord $\hat{b}$ puis $\hat{a}$.  
+ 
+ La formule nous indique que $\hat{b} = \frac{\sum_{i=1}^N(y_i - \bar{y})(x_i - \bar{x})}{\sum_{i=1}^N (x_i - \bar{x})^2}$    
+ 
+```{r echo=FALSE}
+knitr::kable( 
+  data.frame( 
+    row.names = c("Années Expériences (X)", "Salaires (y)"), 
+    list("Sommes" = c(sum(data$annees), sum(data$salaire)),
+      "Moyennes" = c(mean(data$annees), mean(data$salaire)))
+    )
+  )
+```
+ 
+Nous allons donc calculer les statistiques intermédiaires en ajoutant des colonnes à notre tableau initial.  
+
+```{r echo=FALSE}
+X_bar = mean(data$annees)
+Y_bar = mean(data$salaire)
+
+data$X_X_bar <- data$annees - X_bar
+data$Y_Y_bar <- data$salaire - Y_bar 
+data$Y_Y_bar_Xi_x_bar = data$Y_Y_bar * data$X_X_bar
+data$X_X_bar_square = data$X_X_bar^2
+
+knitr::kable( head(data), 
+              col.names = c("$X$", "$Y$", "$X - \\bar{X}$", "$y-\\bar{y}$", 
+                            "$(y-\\bar{y})(X - \\bar{X})$", "$(X - \\bar{X})^2$") )
+```
+
 
 Le jeu de données contient 30 observations. 
 Les années sont continues, il s'agit en fait du nombre total de jours qui est divisé par 365 pour exprimer les expériences en années.  
