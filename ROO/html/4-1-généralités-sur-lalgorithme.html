@@ -127,6 +127,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="4-1-généralités-sur-lalgorithme.html#généralités-sur-lalgorithme"><span class="toc-section-number">4.1</span> Généralités sur l’algorithme</a></li>
 <li><a href="4-2-applications-1.html#applications-1"><span class="toc-section-number">4.2</span> Applications</a></li>
 </ul></li>
+<li><a href="5-conclusion.html#conclusion"><span class="toc-section-number">5</span> Conclusion</a></li>
+<li><a href="6-bibliographie.html#bibliographie"><span class="toc-section-number">6</span> Bibliographie</a></li>
 </ul>
 </div>
 </div>
@@ -143,7 +145,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 où <span class="math inline">\(x_i\)</span> est un point qui appartient au cluster <span class="math inline">\(C_k\)</span> et <span class="math inline">\(\mu_k\)</span> est la valeur moyenne des points qui sont classés dans ce cluster.</p>
 <p>Chaque observation est donc assignée à un cluster de telle manière que la somme des carrés de la distance de l’observation par rapport au centre du cluster <span class="math inline">\(\mu_k\)</span> est minimisée. Nous définissons la variation totale intra-cluster comme suit:</p>
 <p><span class="math display">\[ \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2 \]</span>
-La variation total intra-cluster msure la fiabilité du clustering et c’est elle que le programme d’optimisation cherche à minimiser. Plus elle est petite mieux est la fiabilité.</p>
+La variation totale intra-cluster msure la fiabilité du clustering et c’est elle que le programme d’optimisation cherche à minimiser. Plus elle est petite mieux est la fiabilité.</p>
 <p>La résolution de ce programme se fait via l’algorithme suivant :<br />
 L’algorithme K-means peut être résumé comme suit:</p>
 <ul>

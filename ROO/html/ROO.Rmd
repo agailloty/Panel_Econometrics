@@ -5,6 +5,7 @@ date: "10/11/2020"
 output: bookdown::tufte_html_book
 ---
 
+
 ```{r include=FALSE}
 knitr::opts_chunk$set(comment = NA)
 library(dplyr)
@@ -177,6 +178,9 @@ Nous pouvons aussi déterminer la valeur de $\hat{a}$ en utilisant sa formule qu
 
 # Les moindres carrés ordinaires multiples 
 
+La méthode des moindres carrés permet ainsi d'établir une causalité entre les variables x et y. Cette causalité va au-delà d'une simple corrélation. En économie, la méthode des OLS est utilisée pour trouver les relations causales et bien souvent une seule variable ne suffit pas à expliquer un phénomène en particulier.  
+
+
 
 
 # La méthode des K-Moyennes  
@@ -200,7 +204,7 @@ où $x_i$ est un point qui appartient au cluster $C_k$ et $\mu_k$ est la valeur 
 Chaque observation est donc assignée à un cluster de telle manière que la somme des carrés de la distance de l'observation par rapport au centre du cluster $\mu_k$ est minimisée.  Nous définissons la variation totale intra-cluster comme suit:  
 
 $$ \sum_{k=1}^k W(C_k) = \sum_{k=1}^k \sum_{x_i \in C_k} (x_i - \mu_k)^2 $$
-La variation total intra-cluster msure la fiabilité du clustering et c'est elle que le programme d'optimisation cherche à minimiser. Plus elle est petite mieux est la fiabilité.  
+La variation totale intra-cluster msure la fiabilité du clustering et c'est elle que le programme d'optimisation cherche à minimiser. Plus elle est petite mieux est la fiabilité.  
 
 La résolution de ce programme se fait via l'algorithme suivant :  
 L'algorithme K-means peut être résumé comme suit:  
@@ -228,6 +232,8 @@ Pour l'application des K-Means, j'ai sélectionné les variables suivantes :
 - L'espérance de vie (ESPERANCE)
 - Le taux de fertilité des femmes (nombre moyen d'enfants par femme en âge de procréer) (FERTILITE)
 - La part du revenu national épargné (EPARGNE)
+
+Il y a 142 observations dans la base de données, qui représentent des pays et territoires.  
 
 Avant d'appliquer l'algorithme nous avons choisi de normaliser chaque variable en soustrayant sa moyenne puis en la divisant par son écart-type. Le but de cette transformation est de donner à chaque variable un poids équivalent dans calcul des distance entre les points selon la distance euclidienne. Par exemple le PIB/habitant peut aller jusqu'à plus de 50000 dollars tandis que la croissance du PIB est souvent inférieur à 10%. Normaliser les variables revient donc à homogénéiser chaque variables et enlève l'unité de mesure.   
 
@@ -260,10 +266,12 @@ Voici donc les résultats :
 str(res_kmeans)
 ```
 
-Ces résultats affichés par le langage R montrent que chaque individu présent dans le jeu de données a été attribué à cluster ${1, 2, 3, 4}$. Il y a en total 142 pays et territoires dans le jeu de données.  
+L'algorithme a convergé au bout de 4 itérations, c'est ce qu'indique l'argument `iter`. La somme totale des carrés des distances par rapport au centre de chaque cluster est de 1269, ce qu'indique l'argument `totss`.  
 
-Le somme totale des carrées est égale à 1269. 
-L'algorithme a convergé au bout de 4 itérations.  
+La variation individuelle intra-classe est représentée par le résultat `withinss`. 
+La variation totale intra-cluster est égale à 703, c'est la somme des variations individuelles. Nous ne pouvons pas dire si ce nombre est grand ou petit car il n'existe pas un indicateur pour exprimer la fiabilité en pourcentage. Mais ce premier résultat nous sert de référence. Les praticiens de cet algorithme utilisent souvent une approche itérative qui consiste à choisir un vecteur de paramètres $k$ qu'on donne à l'algorithme pour qu'il partitionne les données, puis le nombre $k$ qui donne la moindre variable totale intra-classe sera retenue.  
+
+Affichons comment l'algorithme a partitionné les pays selon les clusters.
 
 
 ```{r echo=FALSE}
@@ -274,13 +282,23 @@ data.frame(cluster = res_kmeans$cluster, pays = finalized_df$PAYS) %>%
   knitr::kable(col.names = c("Clusters", "Pays"))
 ```
 
+Nous ne pouvons pas dire si ces résultats sont les meilleurs mais nous voyons déjà que l'algorithme a reproduit la réalité. En effet nous voyons par exemple que presque tous les pays se trouvent dans le cluster 3, ce qui montre que ces pays sont plus homogènes au regard des variables que nous avons choisies.  
 
 
 
+# Conclusion  
 
+Au travers de ce travail nous avons réalisé la puissance et l'utilité des méthodes d'optimisation. Les domaines d'application de l'optimisation sont très variées
 
+# Bibliographie   
 
-• Chaque dossier devra présenter (au moins) un exemple de résolution de problème traité avec des méthode de recherche opérationnelle • Les dossiers (Powerpoint, Word, pdf, …) sont de 10 à 20 pages. Ils doivent impérativement être remis avant le 30/11/19
+Ce travail a été réalisé en prenant en compte la reproductibilité des résultats. Le code source de ce travail peut être consulté à travers ce [lien](https://github.com/agailloty/Panel_Econometrics/blob/main/ROO/ROO.Rmd).  
+
+R Core Team (2020). R: A language and environment for statistical
+  computing. R Foundation for Statistical Computing, Vienna, Austria.
+  URL https://www.R-project.org/. 
+  
+
 
 
 

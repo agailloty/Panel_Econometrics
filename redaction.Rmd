@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE, comment = FALSE, dpi = 300)
 # Load package & data
 library(ggplot2)
 theme_set(ggthemes::theme_economist())
+library(knitr)
+#library(kableExtra)
 library(readr)
 library(dplyr)
 phillips <- read_csv("final_data/final.csv")
@@ -41,7 +43,27 @@ Pour répondre aux questions que nous nous sommes posées dans la problématique
 - Le pourcentage de la population ayant accès à l'électricité (ELECTRICITY)  
 
 Lors du pré-traitement des données, nous avons remarqué qu'il existait beaucoup de données manquantes pour la variable *stock de migrants (MIGRATION)*, il nous a donc semblé pertinent de retirer cette variable du modèle car les techniques d'imputation multiple que nous avons utilisées pour imputer les données manquantes remplaceraient les données par des données biaisées qui réduisent la variance que nous cherchons à expliquer.  
-Les détails sur le pré-traitement des données ainsi que les scripts R se trouvent dans les annexes de ce document.  
+Les détails sur le pré-traitement des données ainsi que les scripts R se trouvent dans les annexes de ce document.   
+
+# Statistiques et visualisations des données 
+
+Les données sont cylindrées, ce qui signifie que pour chaque avons pour chaque année 182 observations. La période sur laquelle nous travaillons est de 20 ans, de l'année 2000 et 2019. 
+
+Nous aimerions donc représenter avoir une idée globale sur la distribution des variables pour chaque année.  
+
+```{r echo=FALSE}
+phillips %>%
+  select(- c(COUNTRY, ID)) %>%
+  group_by(YEAR) %>%
+  summarise_all(mean) %>%
+  kable()
+```
+
+```{r}
+
+```
+
+
 
 
 
