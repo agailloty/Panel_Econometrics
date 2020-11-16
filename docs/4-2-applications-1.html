@@ -127,6 +127,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="4-1-généralités-sur-lalgorithme.html#généralités-sur-lalgorithme"><span class="toc-section-number">4.1</span> Généralités sur l’algorithme</a></li>
 <li><a href="4-2-applications-1.html#applications-1"><span class="toc-section-number">4.2</span> Applications</a></li>
 </ul></li>
+<li><a href="5-conclusion.html#conclusion"><span class="toc-section-number">5</span> Conclusion</a></li>
+<li><a href="6-bibliographie.html#bibliographie"><span class="toc-section-number">6</span> Bibliographie</a></li>
 </ul>
 </div>
 </div>
@@ -148,6 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Le taux de fertilité des femmes (nombre moyen d’enfants par femme en âge de procréer) (FERTILITE)</li>
 <li>La part du revenu national épargné (EPARGNE)</li>
 </ul>
+<p>Il y a 142 observations dans la base de données, qui représentent des pays et territoires.</p>
 <p>Avant d’appliquer l’algorithme nous avons choisi de normaliser chaque variable en soustrayant sa moyenne puis en la divisant par son écart-type. Le but de cette transformation est de donner à chaque variable un poids équivalent dans calcul des distance entre les points selon la distance euclidienne. Par exemple le PIB/habitant peut aller jusqu’à plus de 50000 dollars tandis que la croissance du PIB est souvent inférieur à 10%. Normaliser les variables revient donc à homogénéiser chaque variables et enlève l’unité de mesure.</p>
 <p>Nous commençons par une première résolution de l’algorithme en choisissant <span class="math inline">\(k=4\)</span>, l’algorithme de Hartigan-Wong (que nous avons décrit plus haut) puis le nombre maximal d’itération à 15.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
@@ -170,9 +173,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  $ iter        : int 4
  $ ifault      : int 0
  - attr(*, &quot;class&quot;)= chr &quot;kmeans&quot;</code></pre>
-<p>Ces résultats affichés par le langage R montrent que chaque individu présent dans le jeu de données a été attribué à cluster <span class="math inline">\({1, 2, 3, 4}\)</span>. Il y a en total 142 pays et territoires dans le jeu de données.</p>
-<p>Le somme totale des carrées est égale à 1269.
-L’algorithme a convergé au bout de 4 itérations.</p>
+<p>L’algorithme a convergé au bout de 4 itérations, c’est ce qu’indique l’argument <code>iter</code>. La somme totale des carrés des distances par rapport au centre de chaque cluster est de 1269, ce qu’indique l’argument <code>totss</code>.</p>
+<p>La variation individuelle intra-classe est représentée par le résultat <code>withinss</code>.
+La variation totale intra-cluster est égale à 703, c’est la somme des variations individuelles. Nous ne pouvons pas dire si ce nombre est grand ou petit car il n’existe pas un indicateur pour exprimer la fiabilité en pourcentage. Mais ce premier résultat nous sert de référence. Les praticiens de cet algorithme utilisent souvent une approche itérative qui consiste à choisir un vecteur de paramètres <span class="math inline">\(k\)</span> qu’on donne à l’algorithme pour qu’il partitionne les données, puis le nombre <span class="math inline">\(k\)</span> qui donne la moindre variable totale intra-classe sera retenue.</p>
+<p>Affichons comment l’algorithme a partitionné les pays selon les clusters.</p>
 <table>
 <colgroup>
 <col width="1%" />
@@ -203,11 +207,12 @@ L’algorithme a convergé au bout de 4 itérations.</p>
 </tr>
 </tbody>
 </table>
-<p>• Chaque dossier devra présenter (au moins) un exemple de résolution de problème traité avec des méthode de recherche opérationnelle • Les dossiers (Powerpoint, Word, pdf, …) sont de 10 à 20 pages. Ils doivent impérativement être remis avant le 30/11/19</p>
+<p>Nous ne pouvons pas dire si ces résultats sont les meilleurs mais nous voyons déjà que l’algorithme a reproduit la réalité. En effet nous voyons par exemple que presque tous les pays se trouvent dans le cluster 3, ce qui montre que ces pays sont plus homogènes au regard des variables que nous avons choisies.</p>
 </div>
 <!-- </div> -->
 <p style="text-align: center;">
 <a href="4-1-généralités-sur-lalgorithme.html"><button class="btn btn-default">Previous</button></a>
+<a href="5-conclusion.html"><button class="btn btn-default">Next</button></a>
 </p>
 </div>
 </div>
