@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(comment = NA, dpi = 300)
 library(dplyr)
 #library(kableExtra)
 data <- read.csv("data/Salary_Data.csv")
@@ -176,13 +176,16 @@ a <- Y_bar - b * X_bar
 Nous calculons donc $\hat{b}$ à partir des valeurs générées dans le tableau.  
 Le coefficient de $\hat{b}$ estimé est égal à `r round(b,2)`.  
 
-Nous pouvons aussi déterminer la valeur de $\hat{a}$ en utilisant sa formule qui est $\hat{a} = \bar{y} - \hat{b}\bar{x}$.  Ainsi $\hat{a}$ est égal à `r round(a, 2)`   
+Nous pouvons aussi déterminer la valeur de $\hat{a}$ en utilisant sa formule qui est $\hat{a} = \bar{y} - \hat{b}\bar{x}$.  
+Ainsi $\hat{a}$ est égal à `r as.integer(a, 2)`. 
 
+Nous pouvons représenter la droite sur les données. 
 
-# Les moindres carrés ordinaires multiples 
-
-La méthode des moindres carrés permet ainsi d'établir une causalité entre les variables x et y. Cette causalité va au-delà d'une simple corrélation. En économie, la méthode des OLS est utilisée pour trouver les relations causales et bien souvent une seule variable ne suffit pas à expliquer un phénomène en particulier.  
-
+```{r echo=FALSE}
+plot(x = data$annees, y = data$salaire, xlab = "Années expériences", 
+     ylab = "Salaire", main = "Nuage de points ajusté")
+abline(a, b, col = "red")
+```
 
 
 

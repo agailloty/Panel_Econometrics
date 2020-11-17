@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment = FALSE, dpi = 300)
+knitr::opts_chunk$set(echo = TRUE, comment = NA, dpi = 300)
 # Load package & data
 library(ggplot2)
 theme_set(ggthemes::theme_economist())
@@ -45,23 +45,142 @@ Pour répondre aux questions que nous nous sommes posées dans la problématique
 Lors du pré-traitement des données, nous avons remarqué qu'il existait beaucoup de données manquantes pour la variable *stock de migrants (MIGRATION)*, il nous a donc semblé pertinent de retirer cette variable du modèle car les techniques d'imputation multiple que nous avons utilisées pour imputer les données manquantes remplaceraient les données par des données biaisées qui réduisent la variance que nous cherchons à expliquer.  
 Les détails sur le pré-traitement des données ainsi que les scripts R se trouvent dans les annexes de ce document.   
 
-# Statistiques et visualisations des données 
+Nous n'avons pas parmi nos variables des variables qui ne varient qu'avec les individus, toutes les variables varient en même temps avec les individus et avec le temps. 
 
-Les données sont cylindrées, ce qui signifie que pour chaque avons pour chaque année 182 observations. La période sur laquelle nous travaillons est de 20 ans, de l'année 2000 et 2019. 
+# Analyses statistiques des variables et visualisations 
 
-Nous aimerions donc représenter avoir une idée globale sur la distribution des variables pour chaque année.  
+Les données sont cylindrées, ce qui signifie que pour chaque avons pour chaque année 182 observations. La période sur laquelle nous travaillons est de 20 ans, de l'année 2000 et 2019.  
+
+Nous voulons trouver une stratégie pour représenter l'évolution des variables pour tous les pays pendant 20 ans. Nous calculons donc la valeur moyenne de chaque variable pour tous les pays puis nous les représentons sur un graphique. 
+
+```{r echo=FALSE, fig.height=8, fig.width=8}
+summaries <- phillips %>%
+  select(- c(COUNTRY, ID, MIGRATION)) %>%
+  group_by(YEAR) %>%
+  summarise_all(mean)
+
+layout(matrix(1:9, ncol = 3, byrow = TRUE)) 
+for (column in colnames(summaries[,2:10])) {
+  plot(x=2000:2019, y= summaries[[column]], main = column, 
+       xlab = "Années", ylab = column, type = "l")
+}
+```
+
+Pour chacune des variables nous observons des tendances différentes. Le PIB, le PIB par tête, les dépenses publiques, la part de la population urbaine et le pourcentage de la population ayant accès à l'électricité ont augmenté. Il n'y a pas de saisonnalité pour ces variables.  
+De l'autre côté, la croissance du PIB, le taux d'inflation, la croissance de la population puis le taux de chômage ont des tendances plus variables.  
+La tendance du taux de chômage semble suivre celle du taux de croissance du PIB. Le taux d'inflation de son côté fluctue beaucoup plus sur ces périodes de 20 ans.  
+
+
+
+Nous pouvons faire de même pour représenter l'évolution de la variance pour chaque pays durant les 20 années. 
+
+```{r echo=FALSE, fig.height=8, fig.width=8}
+summaries <- phillips %>%
+  select(- c(COUNTRY, ID, MIGRATION)) %>%
+  group_by(YEAR) %>%
+  summarise_all(var)
+
+layout(matrix(1:9, ncol = 3, byrow = TRUE)) 
+for (column in colnames(summaries[,2:10])) {
+  plot(x= 2000:2019, y = summaries[[column]], main = column, 
+       xlab = "Années", ylab = column, type = "l")
+}
+```
+
+
+Nous allons faire un dernier graphique qui représente un nuage de point du taux de chômage avec toutes les moyennes des variables pour les données.  
+
+```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+summaries <- phillips %>%
+  select(- c(COUNTRY, ID, MIGRATION)) %>%
+  group_by(YEAR) %>%
+  summarise_all(mean)
+
+layout(matrix(1:9, ncol = 3, byrow = TRUE)) 
+for (column in colnames(summaries[,2:10])) {
+  res_estim <- lm(as.formula(paste("UNEMPLOYMENT", "~", column)), data = summaries)$coefficients
+  plot(y= summaries$UNEMPLOYMENT, x = summaries[[column]], main = paste("UNEMPLOYMENT vs.", column), 
+       ylab = "UNEMPLOYMENT", xlab = column, type = "p")
+  if (column != "UNEMPLOYMENT") {
+    abline(a = res_estim[1], b = res_estim[2], col = "red")
+  }
+}
+```
+
+Sur ces graphiques nous observons qu'il y a des relations à la fois positives et négatives entre le taux de chômage et les variables endogènes.  
+
+Par exemple le PIB par habitant, les dépenses publiques, la part de la population urbaine ont des impacts négatifs sur le taux de chômage.  
+
+# Tests de spécification du modèle  
+
+## Note sur les méthodes d'estimation sur des données panel 
+
+Dans le cadre des données de panel, nous possédons un échantillon comportant des informations sur un ensemble d’individus indicés par $i = 1,…, N$ que l’on suppose présents pendant toute la période d’étude (on parle alors d’échantillon cylindré (balanced) sinon non cylindré (no balanced)). Les dates auxquelles les
+données sont observées sont indicées par $t = 1, ..., T$.  
+Pour chaque individu, on peut écrire :
+
+$$y_{it} = X_{it}b + u_{it}$$
+
+
+où $u_{it}$ représente le terme d'erreur. Selon les propriétés de la distribution de $u$ nous sommes amenés à choisir différents estimateurs.  
+
+## Le modèle linéaire
+
+Les différents modèles des données de panel se distinguent par les hypothèses faites sur le terme d'erreur. Par exemple si nous supposons que le terme d'erreur vérifie toutes les hypothèses standard des moindres carrés ordinaires (OLS) alors nous allons construire un modèle linéaire que nous estimons par les OLS.   
+
+## Les modèles à effets individuels 
+
+Les hypothèses faites pour le modèle à erreur simple sont difficiles à soutenir dans la réalité car peu de modèles peuvent résumer la totalité de l’hétérogénéité des comportements des individus au moyen des seules variables explicatives. On parle d’hétérogénéité inobservée :  
+
+Il existe deux modèles principaux qui prennent en compte l’hétérogénéité des individus :  
+
+- Le modèle à erreur composée qui suppose que l’effet individuel est sans corrélation avec les variables explicatives. On parle de modèle à effet non corrélé. 
+- Le modèle à effet fixe qui suppose que l’hétérogénéité est corrélée avec les variables explicatives. On parle de modèle à effet corrélé. 
+
+Le modèle à effet fixe est considéré comme le plus pertinent.  
+
+## Test pour la spécification du modèle avec TSP 
+
+Avant donc de commencer à estimer les paramètres du modèle il importe de tester avec TSP pour savoir quelle spécification du modèle conviendrait le mieux.  
+
+![](panel_img/fixed_models.PNG) 
+
+# Détection de l'existence d'une multicolinéarité entre les variables. 
 
 ```{r echo=FALSE}
 phillips %>%
-  select(- c(COUNTRY, ID)) %>%
-  group_by(YEAR) %>%
-  summarise_all(mean) %>%
-  kable()
+  select(-c(ID, GDPUSD, URBANPOP, YEAR, COUNTRY)) %>%
+  lm(UNEMPLOYMENT~., data = .) %>%
+  car::vif() %>%
+  kable(col.names = "Valeur VIF")
 ```
 
-```{r}
 
-```
+# Estimations de tous les modèles 
+
+Nous estimerons au total 9 modèles selon les spécifications suivantes : 
+
+## Estimation par OLS 
+
+## Estimation deux effets fixes 
+
+## Estimation sans effet temps WITHIN
+
+## Estimation effet temps ONLY
+
+## Estimations effets aléatoires 
+
+## Estimations effets aléatoires sans effets temps 
+
+## Estimation résidus autorégressif ordre 1 
+
+## Estimation BETWEEN groupe 
+
+## Estimation BETWEEN période  
+
+
+# Tests 
+
 
 
 
