@@ -1,0 +1,29 @@
+---
+title: "Le modèle principal-agent avec action cachée : Incitations dans le cadre d'une relation client et avocat"
+author: "Axel-Cleris Gailloty"
+date: "20/11/2020"
+output: 
+  word_document:
+    reference_docx: "../template.docx"
+---
+
+# Introduction 
+
+Dans l'approche économique moderne la manière d'établir des institutions qui permettent d'inciter efficacement des agents économiques à la réalisation d'une tâche est devenue une question importante.  
+Le prix Nobel d'Economie était décerné en 2017 à Richard Thaler sur sa théorie des nudges qui est une forme d'incitation. Toutefois cela n'a pas toujours été le cas en sciences économiques. En effet on remarquera que les théories d'incitations sont en fait relativement nouvelles dans le champs de la discipline. 
+
+En 1972, Marschak et Radner élaborent la "théorie des équipes". Cette théorie reconnaît la nature décentralisée de l'information mais attribuait à chaque membre de l'équipe une seule et même fonction objective. La question des incitations ne pouvait pas alors réellement se poser car pour arriver à une optimalité il fallait optimiser cette seule fonction objective. Toutefois Marschak reconnait que dans une même équipe les individus peuvent avoir des fonctions objectives différentes. Alors se pose donc la question de la délégation. Arrow remarque en 1968 déjà que le fait de former une équipe d'individu n'a de sens que parce que chaque individu a une compétence précise que le principal n'avait pas. Ainsi les travaux sur la théorie des incitations ont commencé à émergé. 
+
+
+# Revue de la littérature sur les théories économique du modèle principal-agent. 
+
+# Cas d'exemple : incitation dans le cadre d'une relation client-avocat 
+
+## Définitions des contraintes et formalisation
+
+### Contraintes d'incitations 
+
+### Contraintes de participation
+
+
+
